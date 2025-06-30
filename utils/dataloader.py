@@ -67,26 +67,61 @@ def read_normalize(scene_arr):
 
 ### - Dataset definition
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, paths_scene, paths_truth):
+    def __init__(self, paths_scene, paths_truth, paths_dem=None, use_dem=False):
         self.paths_scene = paths_scene
         self.paths_truth = paths_truth
+        self.paths_dem = paths_dem
+        self.use_dem = use_dem
 
     def __getitem__(self, idx):
-        # load pairwise scene and truth images
+        # Load scene and truth image
         scene_path = self.paths_scene[idx]
         truth_path = self.paths_truth[idx]
-        with rio.open(scene_path) as src, rio.open(truth_path) as truth_src:
+
+        with rio.open(scene_path) as src:
             scene_arr = src.read().transpose((1, 2, 0))  # (H, W, C)
+
+        if self.use_dem and self.paths_dem is not None:
+            dem_path = self.paths_dem[idx]
+            with rio.open(dem_path) as dem_src:
+                dem_arr = dem_src.read(1)  # (H, W)
+            dem_arr = dem_arr[:, :, np.newaxis]  # expand to (H, W, 1)
+            scene_arr = np.concatenate([scene_arr, dem_arr], axis=-1)  # (H, W, C+1)
+
+        with rio.open(truth_path) as truth_src:
             truth_arr = truth_src.read(1)  # (H, W)
 
         ## Pre-processing
-        scene_arr = read_normalize(scene_arr) # normalization
-        scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))
-        patch, truth = crop(size=(256,256))(scene_arr, truth_arr)
-        truth = truth[np.newaxis,:].astype(np.float32)
+        scene_arr = read_normalize(scene_arr)  # normalization
+        scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))  # (C, H, W)
+        patch, truth = crop(size=(256, 256))(scene_arr, truth_arr)  # crop
+        truth = truth[np.newaxis, :].astype(np.float32)  # (1, H, W)
         patch = torch.from_numpy(patch).float()
         truth = torch.from_numpy(truth).float()
         return patch, truth
-        
+
     def __len__(self):
         return len(self.paths_scene)
+
+# class Dataset(torch.utils.data.Dataset):
+#     def __init__(self, paths_scene, paths_truth):
+#         self.paths_scene = paths_scene
+#         self.paths_truth = paths_truth
+
+#     def __getitem__(self, idx):
+#         # load pairwise scene and truth images
+#         scene_path = self.paths_scene[idx]
+#         truth_path = self.paths_truth[idx]
+#         with rio.open(scene_path) as src, rio.open(truth_path) as truth_src:
+#             scene_arr = src.read().transpose((1, 2, 0))  # (H, W, C)
+#             truth_arr = truth_src.read(1)  # (H, W)
+#         ## Pre-processing
+#         scene_arr = read_normalize(scene_arr) # normalization
+#         scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))
+#         patch, truth = crop(size=(256,256))(scene_arr, truth_arr)
+#         truth = truth[np.newaxis,:].astype(np.float32)
+#         patch = torch.from_numpy(patch).float()
+#         truth = torch.from_numpy(truth).float()
+#         return patch, truth
+#     def __len__(self):
+#         return len(self.paths_scene)

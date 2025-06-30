@@ -44,7 +44,15 @@ Map.centerObject(region, 9);
 Map.addLayer(baseImage, {bands: bands_vis, min: 0, max: 40000}, 'Original Scene');
 Map.addLayer(demImage, {min: 0, max: 4000, palette: ['blue', 'green', 'yellow', 'red']}, 'Elevation (AW3D30)');
 
+// Step 1: 
+var baseProjection = baseImage.select(0).projection();
 
+// Step 2: 
+var demAligned = demImage
+                  .resample('bilinear')  
+                  .reproject({
+                    crs: baseProjection
+                  });
 // --- Export to Google Drive ---
 
 // Task 1: Export the satellite image
@@ -60,7 +68,7 @@ Export.image.toDrive({
 
 // Task 2: Export the DEM data
 Export.image.toDrive({
-  image: demImage.toInt16(),           // Convert DEM data to Int16 to preserve potential negative values
+  image: demAligned.toInt16(),           // Convert DEM data to Int16 to preserve potential negative values
   description: base_name + '_DEM', // Append a suffix to the base name
   folder: export_folder+'_DEM',
   scale: export_scale,
@@ -68,5 +76,3 @@ Export.image.toDrive({
   region: region,
   maxPixels: 1e13
 });
-
-

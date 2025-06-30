@@ -1,7 +1,7 @@
 // author: xin luo
-// create: 2020.11.25, update: 2025.06.21
+// create: 2020.11.25, update: 2025.06.28
 // des: search the landsat and sentinel images
-
+// dem data (ALOS AW3D30 DEM)
 
 /////////////////////////////////////////////////////////////////
 // var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3']   // landsat 9
@@ -13,7 +13,7 @@ var region = ee.Geometry.Rectangle(0.46, 33.98, 0.98, 34.36) //  Use (lon_min,la
 // the area may be appropriate in 2,00,000,000-4,000,000,000
 print('scene area:', region.area())
 
-/// Landsat 578 images
+/// Landsat 5789 and Sentinel 2 images
 var start_time = '1994-5-25'
 var end_time = '1996-12-21'
 
@@ -41,9 +41,7 @@ print(img_sel)
 
 // ---- specific landsat image selection ---- 
 // var image = img_sel.first().clip(region)
-var image = ee.Image('LANDSAT/LT05/C02/T1_L2/LT05_197036_19950704')
-            .clip(region)
-
+var image = ee.Image('LANDSAT/LT05/C02/T1_L2/LT05_197036_19950704').clip(region)
 print(image)
 
 

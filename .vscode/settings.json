@@ -1,0 +1,9 @@
+{
+    // 告诉 Pylance (代码分析工具) 去根目录找模块
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+
+    // 告诉 Jupyter 扩展，将工作目录设置为项目根目录
+    "jupyter.notebookFileRoot": "${workspaceFolder}"
+}
