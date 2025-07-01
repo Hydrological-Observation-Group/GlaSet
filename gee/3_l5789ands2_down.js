@@ -53,8 +53,8 @@ var demAligned = demImage
                   .reproject({
                     crs: baseProjection
                   });
-// --- Export to Google Drive ---
 
+// --- Export to Google Drive ---
 // Task 1: Export the satellite image
 Export.image.toDrive({
   image: baseImage.toUint16(),         // Convert Landsat image to Uint16

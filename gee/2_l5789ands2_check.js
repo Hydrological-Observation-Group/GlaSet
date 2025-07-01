@@ -1,4 +1,4 @@
-// author: xin luo
+// author: xin luo, fawei kang
 // created: 2020.11.25 update 2025.06.28
 // des: check the selected landsat and sentinel images
 // dem data (ALOS AW3D30 DEM)
