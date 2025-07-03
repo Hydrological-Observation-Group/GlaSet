@@ -42,7 +42,7 @@ print('Target scale (m/px):', targetScale);
 
 
 
-// 3. Resample only the DEM data and scene data  to the base image's grid.
+// 3. Resample the DEM data and scene data  to the base image's grid.
 var baseImageAligned = baseImage.reproject({
   crs: targetProjection.crs(),
   scale: targetScale
@@ -55,7 +55,7 @@ var demAligned = demImage.reproject({
 
 // --- Visualization ---
 Map.centerObject(region, 9);
-Map.addLayer(baseImage, {bands: bands_vis, min: 0, max: 40000, gamma: 1.2}, 'Original Image (Not Resampled)');
+Map.addLayer(baseImage, {bands: bands_vis, min: 0, max: 40000, gamma: 1.2}, 'Original Image');
 Map.addLayer(demAligned, {min: 0, max: 4000, palette: ['blue', 'green', 'yellow', 'red']}, 'Aligned DEM');
 
 // 4. Export Images
