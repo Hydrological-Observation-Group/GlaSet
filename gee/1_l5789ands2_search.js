@@ -1,13 +1,13 @@
-// author: xin luo
+// author: xin luo, fawei kang
 // create: 2020.11.25, update: 2025.06.28
 // des: search the landsat and sentinel images
 // dem data (ALOS AW3D30 DEM)
 
 /////////////////////////////////////////////////////////////////
-// var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3']   // landsat 9
-// var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3']   // landsat 8
-// var bands_vis = ['SR_B4', 'SR_B3', 'SR_B2']   // sentinel 2
 var bands_vis = ['SR_B3', 'SR_B2', 'SR_B1']       // landsat 5,7
+// var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3']    // landsat 8
+// var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3']    // landsat 9
+// var bands_vis = ['SR_B4', 'SR_B3', 'SR_B2']    // sentinel 2
 // var region = region // Use box selection
 var region = ee.Geometry.Rectangle(0.46, 33.98, 0.98, 34.36) //  Use (lon_min,lat_min,lon_max,lat_max) directity
 // the area may be appropriate in 2,00,000,000-4,000,000,000

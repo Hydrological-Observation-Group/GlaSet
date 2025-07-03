@@ -60,6 +60,7 @@ Map.addLayer(demAligned, {min: 0, max: 4000, palette: ['blue', 'green', 'yellow'
 
 // 4. Export Images
 // Export the base image, which maintains its original geometric state.
+
 Export.image.toDrive({
   image: baseImageAligned.toUint16(),
   description: base_name,
