@@ -18,7 +18,7 @@ class unet(nn.Module):
         super(unet, self).__init__()
         self.num_bands = num_bands
         self.up = nn.Upsample(scale_factor=2, mode='nearest')
-        self.down_conv1 = conv3x3_bn_relu(num_bands, 16)
+        self.down_conv1 = conv3x3_bn_relu(self.num_bands, 16)
         self.down_conv2 = conv3x3_bn_relu(16, 32)
         self.down_conv3 = conv3x3_bn_relu(32, 64)
         self.down_conv4 = conv3x3_bn_relu(64, 128)
@@ -29,7 +29,7 @@ class unet(nn.Module):
                 nn.Conv2d(32, 1, kernel_size=3, padding=1),
                 nn.Sigmoid()) 
 
-    def forward(self, x):  ## input size: 6x256x256
+    def forward(self, x):   ## input size: 6x256x256
         ## encoder part
         x1 = self.down_conv1(x)              
         x1 = F.avg_pool2d(input=x1, kernel_size=2)  # 16x128x128

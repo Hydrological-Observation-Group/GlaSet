@@ -1,4 +1,4 @@
-// author: xin luo
+// author: xin luo, fawei kang
 // create: 2020.11.9 update: 2025.6.27
 // des: This code selects and clips a satellite image and the corresponding DEM, then exports them as two separate files to Google Drive.
 
@@ -20,11 +20,10 @@ var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3'];                          // Landsat
 // --- Export Settings ---
 var base_name = 'l9_scene_01';                // Define a base name for easy management
 var export_folder = 'landsat5789_s2_glacier';
-var export_scale = 30;
+var export_scale = 30;  // 10 for sentinel-2
 
 /////////////////////////////////////////
 // --- Main Processing Logic ---
-
 // 1. Load and clip the base satellite image
 var baseImage = ee.Image(image_id).clip(region).select(bands_sel);
 print('Satellite Image to be Exported:', baseImage);

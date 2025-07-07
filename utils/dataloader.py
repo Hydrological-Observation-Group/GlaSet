@@ -65,63 +65,38 @@ def read_normalize(scene_arr):
     scene_norm_arr[np.isnan(scene_norm_arr)] = 0
     return scene_norm_arr
 
-### - Dataset definition
+### - Dataset definition(consider DEM band)
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, paths_scene, paths_truth, paths_dem=None, use_dem=False):
+    def __init__(self, paths_scene, paths_truth, paths_dem=None):
         self.paths_scene = paths_scene
         self.paths_truth = paths_truth
         self.paths_dem = paths_dem
-        self.use_dem = use_dem
-
     def __getitem__(self, idx):
         # Load scene and truth image
         scene_path = self.paths_scene[idx]
         truth_path = self.paths_truth[idx]
-
+        ## read scene and truth images
         with rio.open(scene_path) as src:
             scene_arr = src.read().transpose((1, 2, 0))  # (H, W, C)
-
-        if self.use_dem and self.paths_dem is not None:
+        ## scene normalization
+        if 's2_scene' in scene_path: scene_arr = scene_arr / 10000  # scale to [0, 1] if needed, adjust based on your data
+        else: scene_arr = scene_arr/ 65455  # scale to [0, 1] if needed, adjust based on your data
+        with rio.open(truth_path) as truth_src:
+            truth_arr = truth_src.read(1)  # (H, W)
+        ## read dem
+        if self.paths_dem is not None:
             dem_path = self.paths_dem[idx]
             with rio.open(dem_path) as dem_src:
                 dem_arr = dem_src.read(1)  # (H, W)
             dem_arr = dem_arr[:, :, np.newaxis]  # expand to (H, W, 1)
-            scene_arr = np.concatenate([scene_arr, dem_arr], axis=-1)  # (H, W, C+1)
-
-        with rio.open(truth_path) as truth_src:
-            truth_arr = truth_src.read(1)  # (H, W)
-
-        ## Pre-processing
-        scene_arr = read_normalize(scene_arr)  # normalization
-        scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))  # (C, H, W)
-        patch, truth = crop(size=(256, 256))(scene_arr, truth_arr)  # crop
+            ## dem normalization
+            dem_arr = dem_arr / 8848  # scale to [0, 1] if needed, adjust based on your data 
+        scene_arr = np.concatenate([scene_arr, dem_arr], axis=-1)  # (H, W, C+1)
+        scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))
+        patch, truth = crop(size=(512, 512))(scene_arr, truth_arr)  # crop
         truth = truth[np.newaxis, :].astype(np.float32)  # (1, H, W)
         patch = torch.from_numpy(patch).float()
         truth = torch.from_numpy(truth).float()
         return patch, truth
-
     def __len__(self):
         return len(self.paths_scene)
-
-# class Dataset(torch.utils.data.Dataset):
-#     def __init__(self, paths_scene, paths_truth):
-#         self.paths_scene = paths_scene
-#         self.paths_truth = paths_truth
-
-#     def __getitem__(self, idx):
-#         # load pairwise scene and truth images
-#         scene_path = self.paths_scene[idx]
-#         truth_path = self.paths_truth[idx]
-#         with rio.open(scene_path) as src, rio.open(truth_path) as truth_src:
-#             scene_arr = src.read().transpose((1, 2, 0))  # (H, W, C)
-#             truth_arr = truth_src.read(1)  # (H, W)
-#         ## Pre-processing
-#         scene_arr = read_normalize(scene_arr) # normalization
-#         scene_arr = scene_arr.astype(np.float32).transpose((2, 0, 1))
-#         patch, truth = crop(size=(256,256))(scene_arr, truth_arr)
-#         truth = truth[np.newaxis,:].astype(np.float32)
-#         patch = torch.from_numpy(patch).float()
-#         truth = torch.from_numpy(truth).float()
-#         return patch, truth
-#     def __len__(self):
-#         return len(self.paths_scene)
