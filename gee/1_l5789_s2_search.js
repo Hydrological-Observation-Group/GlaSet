@@ -54,6 +54,3 @@ var scene_outline = empty.paint({
 Map.addLayer(image, {bands: bands_vis, min:0, max:20000}, 'Landsat 9');
 // Map.addLayer(img_col, {bands: bands_vis, min:0, max:20000}, 'Landsat 9 collection');
 Map.addLayer(scene_outline, {palette: '#FFFF00'}, 'scene_outline')
-
-
-

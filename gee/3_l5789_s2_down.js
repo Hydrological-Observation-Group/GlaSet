@@ -1,5 +1,5 @@
-// author: xin luo, fawei kang
-// create: 2020.11.9 update: 2025.6.27
+// author: xin luo
+// create: 2020.11.9 update: 2025.07.02
 // des: This code selects and clips a satellite image and the corresponding DEM, then exports them as two separate files to Google Drive.
 
 /////////////////////////////////////////
@@ -18,60 +18,66 @@ var bands_vis = ['SR_B5', 'SR_B4', 'SR_B3'];                          // Landsat
 // var bands_vis = ['B11', 'B8', 'B4'];                                  // Sentinel 2
 
 // --- Export Settings ---
-var base_name = 'l9_scene_01';                // Define a base name for easy management
+var base_name = 'l9_scene_01';    // Define a base name for easy management
 var export_folder = 'landsat5789_s2_glacier';
-var export_scale = 30;  // 10 for sentinel-2
-
 /////////////////////////////////////////
-// --- Main Processing Logic ---
-// 1. Load and clip the base satellite image
+// --- Main Processing Logic  ---
+
+// 1. Load and clip images
+// This baseImage is our reference;
 var baseImage = ee.Image(image_id).clip(region).select(bands_sel);
-print('Satellite Image to be Exported:', baseImage);
 
-// 2. Load and clip the ALOS AW3D30 DEM
+//// get dem data and processing to match the base image 
 var demImage = ee.ImageCollection('JAXA/ALOS/AW3D30/V4_1')
-                 .filterBounds(region)
-                 .mosaic()
-                 .select('DSM')
-                 .clip(region);
-print('DEM to be Exported:', demImage);
+                  .filterBounds(region)
+                  .mosaic()
+                  .select('DSM')
+                  .clip(region);
 
-// Note: The two images are no longer merged (using addBands)
+// Get the projection of the base image to use as the alignment target.
+// use the image's native projection.
+var targetProjection = baseImage.select(0).projection();
+var targetScale = targetProjection.nominalScale();
+print('Using base image native projection:', targetProjection);
+print('Target scale (m/px):', targetScale);
+
+// Resample the DEM data and scene data to the base image's grid.
+var baseImageAligned = baseImage.reproject({
+  crs: targetProjection.crs(),
+  scale: targetScale
+});
+
+var demAligned = demImage.reproject({
+  crs: targetProjection.crs(),
+  scale: targetScale
+});
+
 
 // --- Visualization ---
 Map.centerObject(region, 9);
-Map.addLayer(baseImage, {bands: bands_vis, min: 0, max: 40000}, 'Original Scene');
-Map.addLayer(demImage, {min: 0, max: 4000, palette: ['blue', 'green', 'yellow', 'red']}, 'Elevation (AW3D30)');
+Map.addLayer(baseImage, {bands: bands_vis, min: 0, max: 40000, gamma: 1.2}, 'Original Image');
+Map.addLayer(demAligned, {min: 0, max: 4000, palette: ['blue', 'green', 'yellow', 'red']}, 'Aligned DEM');
 
-// Step 1: 
-var baseProjection = baseImage.select(0).projection();
+// 4. Export Images
+// Export the base image, which maintains its original geometric state.
 
-// Step 2: 
-var demAligned = demImage
-                  .resample('bilinear')  
-                  .reproject({
-                    crs: baseProjection
-                  });
-
-// --- Export to Google Drive ---
-// Task 1: Export the satellite image
 Export.image.toDrive({
-  image: baseImage.toUint16(),         // Convert Landsat image to Uint16
-  description: base_name,              // Name using the base name
+  image: baseImageAligned.toUint16(),
+  description: base_name,
   folder: export_folder,
-  scale: export_scale,
-  fileFormat: 'GeoTIFF',
+  scale: targetScale, // Explicitly use the base image's resolution
   region: region,
+  fileFormat: 'GeoTIFF',
   maxPixels: 1e13
 });
 
-// Task 2: Export the DEM data
+// Export the DEM aligned with the base image.
 Export.image.toDrive({
-  image: demAligned.toInt16(),           // Convert DEM data to Int16 to preserve potential negative values
-  description: base_name + '_DEM', // Append a suffix to the base name
-  folder: export_folder+'_DEM',
-  scale: export_scale,
-  fileFormat: 'GeoTIFF',
+  image: demAligned.toInt16(),
+  description: base_name + '_dem',
+  folder: export_folder + '_DEM',
+  scale: targetScale, // Use the same scale as the base image to ensure alignment
   region: region,
+  fileFormat: 'GeoTIFF',
   maxPixels: 1e13
 });
