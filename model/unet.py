@@ -1,6 +1,8 @@
-## author: xin luo
-## create: 2020.1.24
-## des: a simple U-Net model
+'''
+author: xin luo
+create: 2020.1.24
+des: a simple U-Net model
+'''
 
 import torch
 import torch.nn as nn

@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-data/dset/dem
-data/dset/truth
-data/dset/scene
+data/dset
+
+

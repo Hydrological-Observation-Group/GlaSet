@@ -10,8 +10,12 @@
 ### -- **Ongoing image labeling**
 - Number of labeled image reach to 65!! :tada:    
 - If you are interested in this propject, welcome to join us! :clap:
-![Distribution of the labled image](./figures/dset_distribution.png)
+![Distribution of the labled image](./figs/dset_distribution.png)
+![labled image](./figs/glacier_label.png)
 
+![statistics of the labled image](./figs/dset_stats.png)
 
+### -- **Glacier labeling method** 
+todo
 
 
