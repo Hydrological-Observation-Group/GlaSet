@@ -67,6 +67,6 @@ class ValSet(torch.utils.data.Dataset):
         patch_pdem_ptruth = torch.load(self.paths_valset[idx], weights_only=True) 
         patch_pdem = patch_pdem_ptruth.permute(2,0,1)[0:7]  
         ptruth = patch_pdem_ptruth.permute(2,0,1)[7:]  # (1, H, W)
-        return patch_pdem.float(), ptruth.float()
+        return patch_pdem, ptruth
     def __len__(self):
         return len(self.paths_valset)
