@@ -1,5 +1,5 @@
 # glacier_mapping
-**Worldwide glacier mapping using deep leaning**
+**glacier dataset for deep leaning**
 ### --- **Title**   
 **Deep learning-based glacier mapping using Landsat-5, 7, 8 , 9 images and Sentinel 2 images .**
 ### -- **Content**
