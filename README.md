@@ -32,7 +32,7 @@ All images are acquired between **August and October** (late ablation season) to
 
 (You can add a brief description of your processing workflow here.)
 
-![Data Processing Flowchart](./figures/dataworkflow.png)
+![Data Processing Flowchart](./figures/dataworkflow.jpg)
 
 ---
 
@@ -46,18 +46,10 @@ All images are acquired between **August and October** (late ablation season) to
 
 ## Labeling Examples
 
-#### **Example 1: (Greenland)**
+#### **Example**
 
 | Input Image  | Ground Truth Mask |
 |:---:|:---:|
-| ![Input 1](./figures/1.jpg) | ![Mask 1](./figures/1-truth.jpg) |
-
----
-
-#### **Example 2: (High Mountain Asia)**
-
-| Input Image  | Ground Truth Mask |
-|:---:|:---:|
-| ![Input 2](./figures/2.jpg) | ![Mask 2](./figures/2-truth.jpg) |
+| ![Input 1](./figures/exalmple.jpg) |
 
 ---
