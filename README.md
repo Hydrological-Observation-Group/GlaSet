@@ -18,4 +18,8 @@
 ### -- **Glacier labeling method** 
 todo
 
+### Todo  
+1. compare the common deep learning models (unet, deeplabv3+, deeplabv3plus_mobilev2, unet+) in glaicer mapping (visual/methods_metrics.ipynb).      
+
+
 

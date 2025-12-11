@@ -6,13 +6,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def imgShow(img, ax=None, extent=None, color_bands=(2,1,0), clip_percent=2, per_band_clip=False):
+def imgShow(img, 
+            ax=None, 
+            extent=None, 
+            color_bands=(2,1,0),
+            clip_percent=2, 
+            per_band_clip=False,
+            **kwargs):
     '''
     Description: show the single image.
     args:
         img: (row, col, band) or (row, col), DN range should be in [0,1]
         ax: axes for showing image.
-        extent: list, the coordinates of the extent. 
+        extent: list(left, right, bottom, top), the coordinates of the extent. 
         num_bands: a list/tuple, [red_band,green_band,blue_band]
         clip_percent: for linear strech, value within the range of 0-100. 
         per_band_clip: if True, the band values will be clipped by each band respectively. 
@@ -24,11 +30,11 @@ def imgShow(img, ax=None, extent=None, color_bands=(2,1,0), clip_percent=2, per_
 
     if np.min(img) == np.max(img):
         if len(img.shape) == 2:
-            if ax: ax.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1)
-            else: plt.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1)
+            if ax: im = ax.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1, **kwargs)
+            else: im = plt.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1, **kwargs)
         else:
-            if ax: ax.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1)
-            else: plt.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1)
+            if ax: im = ax.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
+            else: im = plt.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
     else:
         if len(img.shape) == 2:
             img_color = np.expand_dims(img, axis=2)
@@ -51,9 +57,9 @@ def imgShow(img, ax=None, extent=None, color_bands=(2,1,0), clip_percent=2, per_
             img_color_clip = (img_color-img_color_hist[0])\
                                      /(img_color_hist[1]-img_color_hist[0]+0.0001)
 
-        if ax: ax.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1)
-        else: plt.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1)
-
+        if ax: im = ax.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
+        else: im = plt.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
+        return im
 
 def imsShow(img_list, img_name_list, clip_list=None, figsize=(8,4),\
                             color_bands_list=None, axis=True, row=None, col=None):
@@ -81,8 +87,10 @@ def imsShow(img_list, img_name_list, clip_list=None, figsize=(8,4),\
             ind = (i*col)+j
             if ind == len(img_list):
                 break
-            imgShow(img=img_list[ind], ax=ax[ind], 
-                        color_bands=color_bands_list[ind], clip_percent=clip_list[ind])        
+            imgShow(img=img_list[ind], 
+                    ax=ax[ind], 
+                    color_bands=color_bands_list[ind], 
+                    clip_percent=clip_list[ind])        
             ax[ind].set_title(img_name_list[ind])
             if not axis: ax[ind].set_axis_off()
     plt.show()
