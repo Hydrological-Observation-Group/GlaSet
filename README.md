@@ -45,9 +45,5 @@ All images are acquired between **August and October** (late ablation season) to
 ## Labeling Examples
 
 #### **Example**
-
-| Input Image|
-|:---:|:---:|
-| ![Input 1](./figures/exalmple.jpg) |
-
+![Input 1](./figures/exalmple.jpg) 
 ---
