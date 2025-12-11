@@ -30,8 +30,6 @@ All images are acquired between **August and October** (late ablation season) to
 
 ## Data Processing Workflow
 
-(You can add a brief description of your processing workflow here.)
-
 ![Data Processing Flowchart](./figures/dataworkflow.jpg)
 
 ---
@@ -48,7 +46,7 @@ All images are acquired between **August and October** (late ablation season) to
 
 #### **Example**
 
-| Input Image  | Ground Truth Mask |
+| Input Image|
 |:---:|:---:|
 | ![Input 1](./figures/exalmple.jpg) |
 
