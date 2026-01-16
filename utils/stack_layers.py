@@ -7,12 +7,12 @@ import rasterio
 from rasterio.warp import reproject, Resampling
 from rasterio.coords import BoundingBox
 
-def resample_to_match(src, reference):
+def resample_to_match(target_src, reference_src):
     """
-    des: resample a source raster to match the spatial reference and resolution of a reference raster
+    des: resample a target raster to match the spatial reference and resolution to a reference raster
     args:
-      src: source rasterio dataset to be resampled
-      reference: reference rasterio dataset to match
+      target_src: target rasterio dataset to be resampled
+      reference_src: reference rasterio dataset to match
     returns:
       resampled: resampled image array (bands, rows, cols)
     exceptions:
@@ -20,19 +20,19 @@ def resample_to_match(src, reference):
     """
 
     # 1. check spatial reference
-    if src.crs != reference.crs:
+    if target_src.crs != reference_src.crs:
         raise ValueError("两幅影像的空间参考(CRS)不同")
     
     # 2. check spatial extent
-    src_bounds = src.bounds
-    ref_bounds = reference.bounds
+    target_bounds = target_src.bounds
+    reference_bounds = reference_src.bounds
     
     # obtain the intersection of the two bounding boxes
     intersect_bounds = BoundingBox(
-        left=max(src_bounds.left, ref_bounds.left),
-        right=min(src_bounds.right, ref_bounds.right),
-        bottom=max(src_bounds.bottom, ref_bounds.bottom),
-        top=min(src_bounds.top, ref_bounds.top)
+        left=max(target_bounds.left, reference_bounds.left),
+        right=min(target_bounds.right, reference_bounds.right),
+        bottom=max(target_bounds.bottom, reference_bounds.bottom),
+        top=min(target_bounds.top, reference_bounds.top)
     )
     
     # check if the intersection is valid
@@ -42,19 +42,19 @@ def resample_to_match(src, reference):
     
     # 3. initialize the output array
     resampled = np.empty(
-        (src.count, reference.height, reference.width),
-        dtype=src.dtypes[0]
+        (target_src.count, reference_src.height, reference_src.width),
+        dtype=target_src.dtypes[0]
     )
     
     # 4. reproject each band of the source raster to the reference raster
     reproject(
-        source=rasterio.band(src, range(1, src.count + 1)),
+        source=rasterio.band(target_src, range(1, target_src.count + 1)),
         destination=resampled,
-        src_transform=src.transform,
-        src_crs=src.crs,
-        dst_transform=reference.transform,
-        dst_crs=reference.crs,
-        dst_resolution=reference.res,
+        src_transform=target_src.transform,
+        src_crs=target_src.crs,
+        dst_transform=reference_src.transform,
+        dst_crs=reference_src.crs,
+        dst_resolution=reference_src.res,
         resampling=Resampling.nearest
     )
     
@@ -140,4 +140,5 @@ def stack_imgs(src1, src2, intersect=False):
         'count': total_bands
     })
     
-    return stacked, out_meta, out_transform
+    return stacked, out_meta
+

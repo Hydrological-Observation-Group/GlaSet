@@ -8,7 +8,6 @@ import numpy as np
 
 def imgShow(img, 
             ax=None, 
-            extent=None, 
             color_bands=(2,1,0),
             clip_percent=2, 
             per_band_clip=False,
@@ -30,11 +29,11 @@ def imgShow(img,
 
     if np.min(img) == np.max(img):
         if len(img.shape) == 2:
-            if ax: im = ax.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1, **kwargs)
-            else: im = plt.imshow(np.clip(img, 0, 1), extent=extent, vmin=0,vmax=1, **kwargs)
+            if ax: im = ax.imshow(np.clip(img, 0, 1), vmin=0,vmax=1, **kwargs)
+            else: im = plt.imshow(np.clip(img, 0, 1), vmin=0,vmax=1, **kwargs)
         else:
-            if ax: im = ax.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
-            else: im = plt.imshow(np.clip(img[:,:,0], 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
+            if ax: im = ax.imshow(np.clip(img[:,:,0], 0, 1), vmin=0, vmax=1, **kwargs)
+            else: im = plt.imshow(np.clip(img[:,:,0], 0, 1), vmin=0, vmax=1, **kwargs)
     else:
         if len(img.shape) == 2:
             img_color = np.expand_dims(img, axis=2)
@@ -57,8 +56,8 @@ def imgShow(img,
             img_color_clip = (img_color-img_color_hist[0])\
                                      /(img_color_hist[1]-img_color_hist[0]+0.0001)
 
-        if ax: im = ax.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
-        else: im = plt.imshow(np.clip(img_color_clip, 0, 1), extent=extent, vmin=0, vmax=1, **kwargs)
+        if ax: im = ax.imshow(np.clip(img_color_clip, 0, 1), vmin=0, vmax=1, **kwargs)
+        else: im = plt.imshow(np.clip(img_color_clip, 0, 1), vmin=0, vmax=1, **kwargs)
         return im
 
 def imsShow(img_list, img_name_list, clip_list=None, figsize=(8,4),\
