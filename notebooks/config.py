@@ -7,8 +7,8 @@ des: configuration file for notebooks.
 from glob import glob
 
 ## directories/files
-dir_scene = 'data/dset/scene/'
-dir_dem = 'data/dset/dem/'
+dir_scene = 'data/dset/scene/scene_nor/'
+dir_dem = 'data/dset/dem/dem_nor/'
 dir_truth = 'data/dset/truth/' 
 ## paths
 paths_truth_vec = sorted(glob('data/dset/truth/*.gpkg'))
