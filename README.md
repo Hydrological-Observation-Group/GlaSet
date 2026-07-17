@@ -19,7 +19,10 @@
 todo
 
 ### Todo  
-1. compare the common deep learning models (unet, deeplabv3+, deeplabv3plus_mobilev2, unet+) in glaicer mapping (visual/methods_metrics.ipynb).      
+1. convert data-down/*.js to python code (ref: https://github.com/Hydrological-Observation-Group/Yunnan-Guizhou-Plateau/tree/main/data_down/water_dset_from_gee). 
+2. re-download data that fall in 60N-90N and 60S-90S, set the crs to EPSG:3413 and EPSG:3031. 
+3. expand data to ~100 scenes. 
+4. compare the common deep learning models (unet, deeplabv3+, deeplabv3plus_mobilev2, unet+) in glaicer mapping (visual/methods_metrics.ipynb).      
 
 
 
